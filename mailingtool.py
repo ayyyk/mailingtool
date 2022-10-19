@@ -1,11 +1,3 @@
-"""
-Программа рассылает сообщения 
-в чаты, каналы, группы по списку
-версия от 19 октября 2022 года
-
-"""
-
-#import configparser
 import asyncio
 import datetime
 import os
@@ -20,13 +12,7 @@ repeating = list()
 sendErrors = list()
 
 
-# инициализация клиента 
-
-#config = configparser.ConfigParser()
-#config.read('mailing.ini')
-
-#api_id = config['api_data']['api_id']
-#api_hash = config['api_data']['api_hash']
+# client init
 
 try:
     api_id = os.environ['api_id']
@@ -49,7 +35,7 @@ except Exception as err:
 
 
 async def main():
-    # создание файла contacts.ml
+    # contacts.ml
     print('1) Проверка наличия файла "contacts.ml"')
     if not os.path.exists('contacts.ml'):
         async for dialog in client.iter_dialogs():
@@ -72,7 +58,7 @@ async def main():
     else:
         print('Файл обнаружен - ОК')
 
-    # считывание файла list.ml
+    # list.ml
     print('\n2) Считывание списка рассылки.')
     try:
         mailingFile = open("list.ml", "r", encoding="utf-8")
@@ -98,7 +84,6 @@ async def main():
                 except Exception:
                     print('Exception \n', error)
                 else:
-                    #print(userId)
                     if userId  in postingList:
                         repeating.append(infoStr)
                     else:
@@ -106,7 +91,7 @@ async def main():
     finally:
         mailingFile.close()
 
-    # если список рассылки пустой
+    # list.ml empty
     if not len(postingList):
         print('Список рассылки пустой. Заполните  файл "list.ml", '
             'данными взяв их из файла "contacts.ml" и запустите '
@@ -154,7 +139,7 @@ async def main():
     print(f'Обнаружено некорректных id - {len(badIds)}')
     print(f'Обнаружено повторяющихся строк - {len(repeating)}')
 
-    # считывание сообщения
+    # message.ml
     print('\n3) Считывание сообщения.')
     b = True
     while b:
@@ -173,7 +158,7 @@ async def main():
         finally:
             messageFile.close()
 
-        # удаление переносов строк и лишних пробелов
+        # clear message
         message = message.replace('\n', '')
         message = message.replace(chr(10), '')
         message = message.strip()
@@ -189,7 +174,7 @@ async def main():
         print('Из файла "message.ml" cчитано следующее сообщение:')
         print(message)
         
-        # тестовая рассылка
+        # test sending to the operator
         print('\n4)Тестовая отправка сообщения оператору')
         me = await client.get_me()
         try:
@@ -208,7 +193,7 @@ async def main():
                     print('Некорректный ввод. Необходимо ввести "yes" ',
                         'если хотите продолжить и "no" если хотите выйти.')
 
-    # рассылка
+    # mailing
     print('\nХотите разосталть сообщение? (yes/no)')
     while True:
         next = input()
@@ -249,7 +234,7 @@ async def main():
     print(f'Количество ошибок - {len(sendErrors)}')
     print(f'Обнаружено повторяющихся строк - {len(repeating)}')
 
-    #формирование файла отчета
+    # report
     resultFile = open("result.ml", "w+", encoding="utf-8")
     now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     resultFile.write(f'Рассылка стартовала {now} \n')
@@ -273,18 +258,7 @@ async def main():
         'в файле "message.ps" и заново запустите приложение.')
 
 
-print('\n***telegram mailing tool (v1.0.0 from 16.10.22) is running***')
+print('\n***telegram mailing tool (v1.0.0 from 19.10.22) is running***')
 
 with client:
     client.loop.run_until_complete(main())
-
-#loop = asyncio.new_event_loop()
-#asyncio.set_event_loop(loop)
-#loop2 = asyncio.get_event_loop()
-
-#loop2.create_task(main())
-#try:
-#    loop2.run_until_complete(asyncio.sleep(3))
-#except KeyboardInterrupt as error:
-    #logger.error(error)
-#    loop2.run_until_complete(asyncio.sleep(3))
