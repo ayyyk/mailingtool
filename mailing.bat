@@ -1,2 +1,2 @@
-cmd.exe /k E:\html\myprojects\mailingtool\pEnv\Scripts\activate.bat
+cmd.exe /k .\pEnv\Scripts\activate.bat
 

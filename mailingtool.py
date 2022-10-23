@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 import os
 import os.path
@@ -18,9 +17,9 @@ try:
     api_id = os.environ['api_id']
     api_hash = os.environ['api_hash']
 except KeyError:
-    print('api_id не найден. Ожидается ввод значения.')
+    print('api_id not found. Enter it manually.')
     api_id = input().strip()
-    print('api_hash не найден. Ожидается ввод значения.')
+    print('api_hash not found. Enter it manually.')
     api_hash = input().strip()
 
 try:
